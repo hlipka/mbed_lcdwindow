@@ -40,11 +40,13 @@ class KS0108LCD8bit: public TextLCDBase
 {
     public:
         /**
-         * @param width number of chars per line
-         * @param height number of lines (currently only 1 and 2 work)
+         * @param width number of chars per line (using an 8x8 font)
+         * @param height number of lines (using an 8x8 font)
          * @param data the bus object used for sending data (must be 8bit)
          * @param enable the pin name for the enable line (1=active)
          * @param rs the pin name for the register select line (0=cmd, 1=data)
+         * @param leftCS the pin name for the left display half (1=active)
+         * @param rightCS the pin name for the right display half (1=active, use NC for smaller displays)
         */
         KS0108LCD8bit(unsigned int width, unsigned int height, BusOut *data, PinName enable, PinName rs, PinName leftCS, PinName rightCS); 
         virtual void init();
