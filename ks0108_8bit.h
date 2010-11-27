@@ -40,28 +40,29 @@ class KS0108LCD8bit: public TextLCDBase
 {
     public:
         /**
-         * @param width number of chars per line (using an 8x8 font)
-         * @param height number of lines (using an 8x8 font)
+         * @param columns number of chars per line (using an 8x8 font)
+         * @param rows number of lines (using an 8x8 font)
          * @param data the bus object used for sending data (must be 8bit)
          * @param enable the pin name for the enable line (1=active)
          * @param rs the pin name for the register select line (0=cmd, 1=data)
          * @param leftCS the pin name for the left display half (1=active)
          * @param rightCS the pin name for the right display half (1=active, use NC for smaller displays)
         */
-        KS0108LCD8bit(unsigned int width, unsigned int height, BusOut *data, PinName enable, PinName rs, PinName leftCS, PinName rightCS); 
+        KS0108LCD8bit(const unsigned int columns, const unsigned int rows, BusOut *data, const PinName enable, const PinName rs, const PinName leftCS, const PinName rightCS); 
         virtual void init();
-        virtual void writeText(unsigned int line, unsigned int pos, char text[]);
+        virtual void writeText(const unsigned int column, const unsigned int row, const char text[]);
         virtual void clear();
 
     protected:
+        virtual void character(int column, int row, int c);
         void clearHalf(DigitalOut *cs);
 
-        void sendCmd(unsigned char byte, DigitalOut *cs);
-        void sendData(unsigned char byte, DigitalOut *cs);
+        void sendCmd(const unsigned char byte, DigitalOut *cs);
+        void sendData(const unsigned char byte, DigitalOut *cs);
         
-        void sendByte(unsigned char byte, DigitalOut *cs);
+        void sendByte(const unsigned char byte, DigitalOut *cs);
         
-        void setChar(unsigned int line, unsigned int pos, char c);
+        void setChar(const unsigned int columns, const unsigned int row, const char c);
         
         BusOut* _data;
         DigitalOut *_enable, *_rs, *_left, *_right;

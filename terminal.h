@@ -41,19 +41,24 @@ class Terminal: public Window
          * works like the normal writeText method, 
          * but also stores the written text into the internal buffer (which makes it subject to scrolling)
         */
-        virtual void writeText(unsigned int line, unsigned int pos, char text[]);
+        virtual void writeText(const unsigned int column, const unsigned int row, const char text[]);
         /**
          * write the given text into the last line (at the first position)
          * @param text the text to write
         */
-        virtual void addText(char text[]);
-        virtual int getHeight(){return _height;};
-        virtual int getWidth(){return _width;};
+        virtual void addText(const char text[]);
+        virtual int getColumns(){return _columns;};
+        virtual int getRows(){return _rows;};
         virtual void clear();
+
+    protected:
+        virtual void character(int column, int row, int c);
+
     private:
         Window* _window;
-        char** _lines;
-        int _height, _width;
+        char** _lineBuffer;
+        unsigned int _columns;
+        unsigned int _rows;
         char* createLine();
 };
 

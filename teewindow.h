@@ -43,16 +43,21 @@ class TeeWindow: public Window
         /**
          * writes the text to all parent windows
         */
-        virtual void writeText(unsigned int line, unsigned int pos, char text[]);
-        virtual int getHeight(){return _height;};
-        virtual int getWidth(){return _width;};
+        virtual void writeText(const unsigned int column, const unsigned int row, const char text[]);
+        virtual int getColumns(){return _columns;};
+        virtual int getRows(){return _rows;};
         /**
          * clears all parent windows
         */
         virtual void clear();
+        
+    protected:
+        virtual void character(int column, int row, int c);
+
     private:
         vector<Window*> _lcds;
-        int _height,_width;
+        unsigned int _columns;
+        unsigned int _rows;
 };
 
 #endif

@@ -46,16 +46,17 @@ class HD44780LCD8bit: public TextLCDBase
          * @param enable the pin name for the enable line (1=active)
          * @param rs the pin name for the register select line (0=cmd, 1=data)
         */
-        HD44780LCD8bit(unsigned int width, unsigned int height, BusOut *data, PinName enable, PinName rs); 
+        HD44780LCD8bit(unsigned int columns, unsigned int rows, BusOut *data, PinName enable, PinName rs); 
         virtual void init();
-        virtual void writeText(unsigned int line, unsigned int pos, char text[]);
+        virtual void writeText(const unsigned int column, const unsigned int row, const char text[]);
         virtual void clear();
 
     protected:
-        void sendCmd(unsigned char byte);
-        void sendData(unsigned char byte);
+        virtual void character(int column, int row, int c);
+        void sendCmd(const unsigned char byte);
+        void sendData(const unsigned char byte);
         
-        void sendByte(unsigned char byte);
+        void sendByte(const unsigned char byte);
         
         BusOut* _data;
         DigitalOut *_enable, *_rs;

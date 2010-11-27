@@ -28,8 +28,8 @@
 #include "wait_api.h"
 
 DogmLCDSPI::DogmLCDSPI
-(unsigned int width, unsigned int height, SPI *spi, PinName enable, PinName rs)
-:SPILCDBase(width,height,spi,enable,rs)
+(unsigned int columns, unsigned int rows, SPI *spi, PinName enable, PinName rs)
+:SPILCDBase(columns,rows,spi,enable,rs)
 {
 }
 
@@ -47,9 +47,13 @@ void DogmLCDSPI::init()
     }
 }
 
-void DogmLCDSPI::writeText(unsigned int line, unsigned int pos, char text[])
+void DogmLCDSPI::character(int column, int row, int c)
 {
-    int address=(line)*0x40+(pos);
+}
+
+void DogmLCDSPI::writeText(const unsigned int column, const unsigned int row, const char text[])
+{
+    int address=(row)*0x40+(column);
     sendCmd((char)address|0x80);
     wait_ms(1);
     

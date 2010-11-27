@@ -30,11 +30,10 @@
 
 #define ENABLE 1
 
-void KS0108LCD8bit::writeText(unsigned int line, unsigned int pos, char text[]) {
-    printf("print to %d,%d {%s}\n",line,pos,text);
+void KS0108LCD8bit::writeText(const unsigned int column, const unsigned int row, const char text[]) {
     int i=0;
     while (text[i]!=0) {
-        setChar(line, pos+i,text[i]);
+        setChar(column+i, row,text[i]);
         i++;
     }
 }
@@ -48,10 +47,10 @@ void KS0108LCD8bit::clear() {
 void KS0108LCD8bit::clearHalf(DigitalOut* cs) {
     for (int x=0;x<8;x++)
     {
+        sendCmd(0xb8|x,cs); 
+        wait_us(1);    
         for (int y=0;y<64;y++)
         {
-            sendCmd(0xb8|x,cs); 
-            wait_us(1);    
             sendCmd(0x40|y,cs); 
             wait_us(1);    
             sendData(0,cs);
@@ -60,12 +59,18 @@ void KS0108LCD8bit::clearHalf(DigitalOut* cs) {
     }
 }
 
-void KS0108LCD8bit::setChar(unsigned int line, unsigned int pos, char c) {
+void KS0108LCD8bit::character(int column, int row, int c)
+{
+    setChar(column,row,c);
+}
+
+void KS0108LCD8bit::setChar(const unsigned int column, const unsigned int row, const char c) {
     DigitalOut* cs=NULL;
-    if (pos>7)
+    int icolumn=column;
+    if (icolumn>7)
     {
         cs=_right;
-        pos-=8;
+        icolumn-=8;
     }
     else
     {
@@ -74,9 +79,9 @@ void KS0108LCD8bit::setChar(unsigned int line, unsigned int pos, char c) {
     if (NULL==cs)
         return;
     
-    sendCmd(0xb8|line,cs); // set x page    
+    sendCmd(0xb8|row,cs); // set x page    
 
-    unsigned int y=pos*8;
+    unsigned int y=icolumn*8;
     sendCmd(0x40|y,cs); // set start line
     
     // send character data
@@ -88,8 +93,8 @@ void KS0108LCD8bit::setChar(unsigned int line, unsigned int pos, char c) {
 }
 
 KS0108LCD8bit::KS0108LCD8bit
-(unsigned int width, unsigned int height, BusOut *data, PinName enable, PinName rs, PinName leftCS, PinName rightCS)
-        :TextLCDBase(width, height) {
+(const unsigned int columns, const unsigned int rows, BusOut *data, const PinName enable, const PinName rs, const PinName leftCS, const PinName rightCS)
+        :TextLCDBase(columns, rows) {
     _data=data;
     _rs=new DigitalOut(rs);
     _enable=new DigitalOut(enable);
@@ -117,28 +122,26 @@ void KS0108LCD8bit::init() {
         wait_ms(10);
         sendCmd(0xc0, _right);
     }
-    printf("left vs. right: %d / %d\n",_left,_right);
     wait_ms(50);
     clear();
 }
 
-void KS0108LCD8bit::sendCmd(unsigned char cmd, DigitalOut *cs) {
+void KS0108LCD8bit::sendCmd(const unsigned char cmd, DigitalOut *cs) {
     _rs->write(0);
     wait_us(1);
     sendByte(cmd, cs);
     wait_us(10);
 }
 
-void KS0108LCD8bit::sendData(unsigned char cmd, DigitalOut *cs) {
+void KS0108LCD8bit::sendData(const unsigned char cmd, DigitalOut *cs) {
     _rs->write(1);
     wait_us(1);
     sendByte(cmd, cs);
     wait_us(10);
 }
 
-void KS0108LCD8bit::sendByte(unsigned char byte, DigitalOut *cs) {
+void KS0108LCD8bit::sendByte(const unsigned char byte, DigitalOut *cs) {
     // display reads flags with rising flank of E
-//    printf("send to %d\n",cs);
     _enable->write(0);
     cs->write(ENABLE);
     _data->write(byte);

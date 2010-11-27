@@ -26,14 +26,18 @@
 TeeWindow::TeeWindow(vector<Window*> lcds) {
     _lcds=lcds;
     int len=_lcds.size();
-    _height=_lcds[0]->getHeight();
-    _width=_lcds[0]->getWidth();
+    _columns=_lcds[0]->getColumns();
+    _rows=_lcds[0]->getRows();
 }
 
-void TeeWindow::writeText(unsigned int line, unsigned int pos, char text[]) {
+void TeeWindow::character(int column, int row, int c)
+{
+}
+
+void TeeWindow::writeText(const unsigned int column, const unsigned int row, const char text[]) {
     int len=_lcds.size();
     for (int i=0;i<len;i++) {
-        _lcds[i]->writeText(line,pos,text);
+        _lcds[i]->writeText(column,row,text);
     }
 }
 

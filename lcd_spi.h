@@ -38,13 +38,13 @@ using namespace mbed;
 class SPILCDBase: public TextLCDBase
 {
     public:
-        SPILCDBase(unsigned int width, unsigned int height, SPI *spi, PinName enable, PinName rs); 
+        SPILCDBase(unsigned int columns, unsigned int rows, SPI *spi, PinName enable, PinName rs); 
 
     protected:
-        void sendCmd(unsigned char byte);
-        void sendData(unsigned char byte);
+        void sendCmd(const unsigned char byte);
+        void sendData(const unsigned char byte);
         
-        void sendByte(unsigned char byte);
+        void sendByte(const unsigned char byte);
 
         SPI* _spi;
         DigitalOut  *_enable, *_rs;

@@ -27,10 +27,14 @@
 #include "DigitalOut.h"
 #include "wait_api.h"
 
+void HD44780LCD8bit::character(int column, int row, int c)
+{
+}
 
-void HD44780LCD8bit::writeText(unsigned int line, unsigned int pos, char text[]) {
+
+void HD44780LCD8bit::writeText(const unsigned int column, const unsigned int row, const char text[]) {
 //    printf("print to %d,%d {%s}\n",line,pos,text);
-    int address=line*0x40+pos;
+    int address=row*0x40+column;
     sendCmd((unsigned char)address|0x80);
     wait_us(30);
 
@@ -46,21 +50,21 @@ void HD44780LCD8bit::clear() {
     sendCmd(1);
 }
 
-void HD44780LCD8bit::sendCmd(unsigned char cmd) {
+void HD44780LCD8bit::sendCmd(const unsigned char cmd) {
     _rs->write(0);
     wait_us(1);
     sendByte(cmd);
 }
 
-void HD44780LCD8bit::sendData(unsigned char cmd) {
+void HD44780LCD8bit::sendData(const unsigned char cmd) {
     _rs->write(1);
     wait_us(1);
     sendByte(cmd);
 }
 
 HD44780LCD8bit::HD44780LCD8bit
-(unsigned int width, unsigned int height, BusOut *data, PinName enable, PinName rs)
-        :TextLCDBase(width, height)
+(unsigned int columns, unsigned int rows, BusOut *data, PinName enable, PinName rs)
+        :TextLCDBase(columns, rows)
         {
         _data=data;
         _rs=new DigitalOut(rs);
@@ -77,7 +81,7 @@ void HD44780LCD8bit::init() {
     }
 }
 
-void HD44780LCD8bit::sendByte(unsigned char byte) {
+void HD44780LCD8bit::sendByte(const unsigned char byte) {
     _data->write(byte);
     _enable->write(1);
     wait_us(2);

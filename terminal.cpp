@@ -26,48 +26,52 @@
 
 Terminal::Terminal(Window* window) {
     _window=window;
-    _height=window->getHeight();
-    _width=window->getWidth();
-    _lines=new char*[_height];
-    for (int i=0;i<_height;i++) {
-        _lines[i]=createLine();
+    _columns=window->getColumns();
+    _rows=window->getRows();
+    _lineBuffer=new char*[_rows];
+    for (int i=0;i<_rows;i++) {
+        _lineBuffer[i]=createLine();
     }
 }
 
 char* Terminal::createLine()
 {
-    char* text=new char[_width+1];
-    memset(text,32,_width);
-    text[_width]=0;
+    char* text=new char[_columns+1];
+    memset(text,32,_columns);
+    text[_columns]=0;
     return text;
 }
 
-void Terminal::writeText(unsigned int line, unsigned int pos, char text[]) {
-    _window->writeText(line,pos,text);
-    int min=pos+strlen(text);
-    if (min>_width)
-        min=_width;
-    for (int i=pos;i<min;i++) {
-        _lines[line][i]=text[i-pos]; // copy text into proper line
+void Terminal::character(int column, int row, int c)
+{
+}
+
+void Terminal::writeText(const unsigned int column, const unsigned int row, const char text[]) {
+    _window->writeText(column,row,text);
+    int min=column+strlen(text);
+    if (min>_columns)
+        min=_columns;
+    for (int i=column;i<min;i++) {
+        _lineBuffer[row][i]=text[i-column]; // copy text into proper line
     }
 }
 
-void Terminal::addText(char text[]) {
-    delete [] _lines[0];
-    for (int i=0;i<_height-1;i++) {
-        _lines[i]=_lines[i+1];
+void Terminal::addText(const char text[]) {
+    delete [] _lineBuffer[0];
+    for (int i=0;i<_rows-1;i++) {
+        _lineBuffer[i]=_lineBuffer[i+1];
     }
-    _lines[_height-1]=createLine();
-    memset(_lines[_height-1],32,_width);
+    _lineBuffer[_rows-1]=createLine();
+    memset(_lineBuffer[_rows-1],32,_columns);
     int min=strlen(text);
-    if (min>_width)
-        min=_width;
+    if (min>_columns)
+        min=_columns;
     for (int i=0;i<min;i++) {
-        _lines[_height-1][i]=text[i]; // copy text into proper line
+        _lineBuffer[_rows-1][i]=text[i]; // copy text into proper line
     }
     clear();
-    for (int i=0;i<_height;i++) {
-        _window->writeText(i,0,_lines[i]);
+    for (int i=0;i<_rows;i++) {
+        _window->writeText(i,0,_lineBuffer[i]);
     }
 }
 

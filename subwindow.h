@@ -36,22 +36,29 @@ class SubWindow: public Window
         /**
          * It is assumed that the sub window fill fit into the parent.
          * @param lcd the parent window
-         * @param offsetX in which column to start the sub window
-         * @param offsetY in which line to start the sub window
-         * @param width the width of the sub window
-         * @param height the height of the sub window
+         * @param columnOffset in which column to start the sub window
+         * @param rowOffset in which line to start the sub window
+         * @param columns the width of the sub window
+         * @param rows the height of the sub window
         */
-        SubWindow(Window* lcd, unsigned int offsetX, unsigned int offsetY, unsigned int width, unsigned int height);
-        virtual void writeText(unsigned int line, unsigned int pos, char text[]);
-        virtual int getHeight(){return _height;};
-        virtual int getWidth(){return _width;};
+        SubWindow(Window* lcd, const unsigned int columnOffset, const unsigned int rowOffset, const unsigned int columns, const unsigned int rows);
+        virtual void writeText(const unsigned int column, const unsigned int row, const char text[]);
+        virtual int getColumns(){return _columns;};
+        virtual int getRows(){return _rows;};
         /**
          * clear the part of the parent window which is spanned by the sub window.
         */
         virtual void clear();
+        
+    protected:
+        virtual void character(int column, int row, int c);
+
     private:
         Window* _lcd;
-        unsigned int _offsetX, _offsetY, _width, _height;
+        unsigned int _columnOffset;
+        unsigned int _rowOffset;
+        unsigned int _columns;
+        unsigned int _rows;
 };
 
 #endif

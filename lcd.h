@@ -37,11 +37,12 @@ class TextLCDBase: public Window
          * it must be called from the outside, and initializes the display.
         */
         virtual void init()=0;
-        virtual int getHeight(){return _height;};
-        virtual int getWidth(){return _width;};
+        virtual int getRows(){return _rows;};
+        virtual int getColumns(){return _columns;};
     protected:
-        const unsigned int _width, _height;
-        TextLCDBase(unsigned int width, unsigned int height):_width(width),_height(height)
+        const unsigned int _columns;
+        const unsigned int _rows;
+        TextLCDBase(unsigned int columns, unsigned int rows):_columns(columns),_rows(rows)
         {
         } 
 };

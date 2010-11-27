@@ -38,16 +38,19 @@ class DogmLCDSPI: public SPILCDBase
 {
     public:
         /**
-         * @param width number of chars per line
-         * @param height number of lines (currently only 1 and 2 work)
+         * @param columns number of chars per line
+         * @param rows number of lines (currently only 1 and 2 work)
          * @param the SPI object used for sending data (set to 1MHz)
          * @param enable the pin name for the enable line (0=active, connected to /CSB)
          * @param rs the pin name for the register select line (0=cmd, 1=data)
         */
-        DogmLCDSPI(unsigned int width, unsigned int height, SPI *spi, PinName enable, PinName rs); 
+        DogmLCDSPI(unsigned int columns, unsigned int rows, SPI *spi, PinName enable, PinName rs); 
         virtual void init();
-        virtual void writeText(unsigned int line, unsigned int pos, char text[]);
+        virtual void writeText(const unsigned int column, const unsigned int row, const char text[]);
         virtual void clear();
+    protected:
+        virtual void character(int column, int row, int c);
+
 };
 
 #endif

@@ -28,8 +28,8 @@
 #include "wait_api.h"
 
 SPILCDBase::SPILCDBase
-(unsigned int width, unsigned int height, SPI *spi, PinName enable, PinName rs)
-:TextLCDBase(width,height)
+(unsigned int columns, unsigned int rows, SPI *spi, PinName enable, PinName rs)
+:TextLCDBase(columns,rows)
 {
     _spi=spi;
     _enable=new DigitalOut(enable);
@@ -40,7 +40,7 @@ SPILCDBase::SPILCDBase
     _spi->frequency(100000);
 }
 
-void SPILCDBase::sendByte(unsigned char byte)
+void SPILCDBase::sendByte(const unsigned char byte)
 {
     _enable->write(0); // enable transfer
     wait_us(1);
@@ -49,7 +49,7 @@ void SPILCDBase::sendByte(unsigned char byte)
     _enable->write(1);
 }
 
-void SPILCDBase::sendCmd(unsigned char cmd)
+void SPILCDBase::sendCmd(const unsigned char cmd)
 {
     _rs->write(0);
     wait_us(1);
@@ -58,7 +58,7 @@ void SPILCDBase::sendCmd(unsigned char cmd)
     _rs->write(1);
 }
 
-void SPILCDBase::sendData(unsigned char cmd)
+void SPILCDBase::sendData(const unsigned char cmd)
 {
     _rs->write(1);
     wait_us(1);
